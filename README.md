@@ -1,3 +1,9 @@
+## Lets setup Express Backend boilerplate with `ESLint`, `Prettier`, `Husky`, and `Lint-Staged` for our Typescript project.
+
+---
+
+## Installation
+
 ### 1. Initialize the project. `package.json`
 
 ```typescript
@@ -37,7 +43,7 @@ tsc --init
   "outDir": "./dist",
 ```
 
-### 6. Update `package.json` scripts:
+### 6. Update `package.json`
 
 ```typescript
 "start": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -80,7 +86,7 @@ export default {
 };
 ```
 
-### Create two files inside the `src` folder:
+### Create two files inside the `src` folder: `app.ts` and `server.ts`
 
 - `app.ts` (Express application setup)
 
@@ -122,25 +128,22 @@ main();
 
 ---
 
-## Setup `ESLint`, `Prettier`, `Husky`, and `lint-staged`
+# Setup `ESLint`, `Prettier`, `Husky`, and `lint-staged`
 
-### 1. Install the ESLint and Prettier extensions in your code editor.
+### 1. Install the `ESLint` and `Prettier` extensions in your code editor.
 
 ### 2. Update `tsconfig.json`:
 
 ```json
-"include": ["src"],
-"exclude": ["node_modules"]
+{
+  "include": ["src"], // which files to compile
+  "exclude": ["node_modules"] // which files to skip
+}
 ```
 
-### 3. Install ESLint and TypeScript ESLint plugin:
+### 4. Create `.eslintrc` file at `root directory` with the following content:
 
-```typescript
-yarn add -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
-```
-
-### 4. Create `.eslintrc` file with the following content:
+- **[ESlint-Prettier Blog](https://blog.logrocket.com/linting-typescript-eslint-prettier/)**
 
 ```json
 {
@@ -165,35 +168,39 @@ npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --
   },
   "env": {
     "browser": true,
-    "node": true,
     "es2021": true
+    "node": true,
+  },
+  "globals": {
+    "process": "readonly"
   }
 }
 ```
 
-### 5. Add the following in package.json scripts:
+### 5. Add the followings in `package.json`:
 
 ```json
-"lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts .",
-"lint:fix": "eslint . --fix"
+"scripts": {
+  "lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts .",
+  "lint:fix": "eslint . --fix",
+  "prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+  "prettier:fix": "prettier --write .",
+  "lint-prettier": "yarn lint:check && yarn prettier:check",
+},
+"lint-staged": {
+  "src/**/*.ts": "yarn lint-prettier"
+},
 ```
 
-### 6. Create .eslintignore file with the following content:
+### 6. Create `.eslintignore` file at `root directory` with the following content:
 
 ```
-dist
 node_modules
+dist
 .env
 ```
 
-### 7. Install Prettier:
-
-```typescript
-yarn add -D prettier
-npm install prettier --save-dev
-```
-
-### 8. Create `.prettierrc` file with the following content:
+### 8. Create `.prettierrc` file at `root directory` with the following content:
 
 ```json
 {
@@ -203,58 +210,26 @@ npm install prettier --save-dev
 }
 ```
 
-### 9. Add the following in package.json scripts:
+### initialize a `.husky` folder with the following command:
 
-```json
-"prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-"prettier:fix": "prettier --write .",
-```
-
-### 10. Update settings.json in VS Code:
-
-```json
-"editor.defaultFormatter": "esbenp.prettier-vscode",
-"editor.formatOnSave": true
-```
-
-### 11. Install eslint-config-prettier:
+- **[Husky GitHub](https://typicode.github.io/husky/getting-started.html)**
 
 ```typescript
-yarn add -D eslint-config-prettier
-npm install eslint-config-prettier --save-dev
+yarn husky install
 ```
 
-### 12. Install Husky:
-
-```typescript
-yarn add husky --dev
-npm install husky --save-dev
-```
-
-### 13. Install lint-staged:
-
-```typescript
-yarn add -D lint-staged
-npm install lint-staged --save-dev
-```
-
-### 14. Update package.json scripts:
-
-```json
-"scripts": {
-  //....other scripts
-  "lint-prettier": "yarn lint:check && yarn prettier:check"
-},
-"lint-staged": {
-  "src/**/*.ts": "yarn lint-prettier"
-}
-```
-
-### 15. Update package.json scripts:
+### 15. Make a hook for husky pre-commit
 
 ```typescript
 yarn husky add .husky/pre-commit "yarn lint-staged"
-npx husky add .husky/pre-commit "yarn lint-staged"
 ```
+
+### Go to `.husky` folder and add the following command to `Pre-commit` file
+
+```typescript
+yarn lint-staged
+```
+
+---
 
 ### Congratulations!🎉 You have successfully set up your Express backend project with ESLint, Prettier, Husky, and lint-staged.😃
