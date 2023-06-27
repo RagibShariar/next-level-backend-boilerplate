@@ -1,6 +1,6 @@
 ## Lets setup Express Backend boilerplate with `ESLint`, `Prettier`, `Husky`, and `Lint-Staged` for our Typescript project.
 
-## Installation
+## **Installation**
 
 ### 1. Initialize the project. `package.json`
 
@@ -14,27 +14,25 @@ npm init
 yarn install
 ```
 
-### 2. Install these dependencies: `Express`, `Mongoose`, `Eslint`, `Dotenv`, `Cors`
+### 3. Install these dependencies: `Express`, `Mongoose`, `Eslint`, `Dotenv`, `Cors`
 
 ```typescript
 yarn add express mongoose eslint dotenv cors
 ```
 
-### 3. Install these dev dependencies: `Typescript`, `ts-node-dev`, `Prettier`, `Lint-Staged`, `Husky`, `eslint-config-prettier`
+### 4. Install these dev dependencies: `Typescript`, `ts-node-dev`, `Prettier`, `Lint-Staged`, `Husky`, `eslint-config-prettier`
 
 ```typescript
 yarn add -D typescript ts-node-dev prettier lint-staged husky eslint-config-prettier
 ```
 
-### 4. Install `TypeScript definitions for Express`, `TypeScript definitions for cors`, `ESLint plugin`, `ESLint parser`
+### 5. Install `TypeScript definitions for Express`, `TypeScript definitions for cors`, `ESLint plugin`, `ESLint parser`
 
 ```typescript
 yarn add -D @types/express @types/cors @typescript-eslint/eslint-plugin @typescript-eslint/parser
 ```
 
----
-
-### 5. Add a `tsconfig.json` file for `Typescript` configuration
+### 6. Add a `tsconfig.json` file for `Typescript` configuration
 
 ```typescript
 tsc --init
@@ -47,7 +45,7 @@ tsc --init
   "outDir": "./dist",
 ```
 
-### 6. Update `package.json`
+### 7. Update `package.json`
 
 ```typescript
 "start": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -55,7 +53,7 @@ tsc --init
 
 ---
 
-## Server Setup
+## **Server Setup**
 
 ### Create a `.env` file at root directory
 
