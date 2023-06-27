@@ -1,13 +1,17 @@
 ## Lets setup Express Backend boilerplate with `ESLint`, `Prettier`, `Husky`, and `Lint-Staged` for our Typescript project.
 
----
-
 ## Installation
 
 ### 1. Initialize the project. `package.json`
 
 ```typescript
 npm init
+```
+
+### 2. Create `node_modules`
+
+```bash
+yarn install
 ```
 
 ### 2. Install these dependencies: `Express`, `Mongoose`, `Eslint`, `Dotenv`, `Cors`
@@ -58,14 +62,17 @@ tsc --init
 ```typescript
 NODE_ENV = development
 PORT = 5000
-DATABASE_URL = // your-database-url
+DATABASE_URL = mongodb+srv://<username>:<password>@cluster0.9nrwj.mongodb.net/database_name?retryWrites=true&w=majority
+
+// replace <username>:<password>
 ```
 
 ### Create a `.gitignore` file at root directory
 
 ```typescript
 dist;
-node_modules.env;
+node_modules;
+.env;
 ```
 
 ### Create a `config` folder inside `src` folder and inside `config` create a `index.ts` file.
@@ -92,18 +99,22 @@ export default {
 
 ```typescript
 //app.ts
-import express, { Application, Request, Response } from "express";
-const app: Application = express();
 import cors from "cors";
+import express, { Application, Request, Response } from "express";
 
+const app: Application = express();
+// const port = 5000; // moved to src/config/index.ts
+
+// Cors
 app.use(cors());
 
 // parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Testing
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+  res.send("Welcome to Digital Cow Hut 2023");
 });
 
 export default app;
@@ -112,18 +123,56 @@ export default app;
 - `server.ts` (Database connection setup)
 
 ```typescript
+import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import config from "./config";
 
-async function main() {
-  await mongoose.connect(config.database_url as string);
-  console.log("Connected to MongoDB");
-  app.listen(config.port, () => {
-    console.log(`Server running at port ${config.port}`);
+// Uncaught exceptions handle
+process.on("uncaughtException", (error) => {
+  console.log(error);
+  process.exit(1);
+});
+
+let server: Server;
+
+async function bootstrap() {
+  try {
+    await mongoose.connect(config.database_url as string); // config/index.ts theke ashbe
+    console.log(`🔗 Database connected successfully`);
+
+    server = app.listen(config.port, () => {
+      console.log(`💻 App is listening on port ${config.port}`);
+    });
+  } catch (err) {
+    console.log(`Failed to connect`, err);
+  }
+
+  // Unhandled Rejection handle
+  process.on("unhandledRejection", (error) => {
+    // console.log(
+    //   'Unhandled Rejection is detected, We are closing the server...'
+    // );
+    if (server) {
+      server.close(() => {
+        console.log(error);
+        process.exit(1);
+      });
+    } else {
+      process.exit(1);
+    }
   });
 }
-main();
+
+bootstrap();
+
+// SIGTERM handle
+process.on("SIGTERM", () => {
+  console.log("SIGTERM is received");
+  if (server) {
+    server.close();
+  }
+});
 ```
 
 ---
